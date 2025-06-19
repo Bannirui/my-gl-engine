@@ -1,0 +1,78 @@
+# ---- 编译输出 ----
+/build/
+/bin/
+/lib/
+/CMakeFiles/
+/Makefile
+/CMakeCache.txt
+/*.cmake
+/install_manifest.txt
+/compile_commands.json
+
+# ---- 编译器缓存文件 ----
+*.o
+*.obj
+*.lo
+*.la
+*.a
+*.lib
+*.so
+*.so.*
+*.dll
+*.dylib
+*.exe
+*.out
+
+# ---- 编辑器生成文件 ----
+*.log
+*.swp
+*.swo
+*~
+.*.sw?
+.DS_Store
+Thumbs.db
+
+# ---- CLion ----
+.idea/
+cmake-build-*/
+
+# ---- VSCode ----
+.vscode/
+
+# ---- Test 产物 ----
+/test/build/
+/test/*.out
+
+# ---- 包管理产物（如 vcpkg）----
+/vcpkg_installed/
+/vcpkg_buildtrees/
+/vcpkg_downloads/
+/vcpkg/packages/
+
+# ---- Conan ----
+/.conan/
+/conan.lock
+/conanbuild/
+/conaninfo.*
+
+# ---- Ninja ----
+/.ninja_log
+/.ninja_deps
+
+# ---- Qt Creator ----
+*.pro.user*
+*.qbs.user*
+*.autosave
+
+# ---- 编译中间文件 ----
+*.d
+*.gcno
+*.gcda
+*.gcov
+
+# ---- CTags / Cscope ----
+tags
+TAGS
+cscope.*
+
+out
