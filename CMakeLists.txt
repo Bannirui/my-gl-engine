@@ -23,23 +23,26 @@ include_directories(include)
 file(GLOB_RECURSE srcs "${source_dir}/*.cpp")
 
 # 编译输出指定源码文件的汇编
-foreach(f_name main.cpp Log.cpp)
-    get_filename_component(s_name ${f_name} NAME_WE)
+foreach(f_path ${srcs})
+    # 不带扩展名人文件名main
+    get_filename_component(s_name ${f_path} NAME_WE)
+    # 输出.i .s文件
+    set(i_file ${CMAKE_CURRENT_BINARY_DIR}/${s_name}.i)
+    set(s_file ${CMAKE_CURRENT_BINARY_DIR}/${s_name}.s)
     add_custom_command(
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${s_name}.i
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${s_name}.s
+            OUTPUT ${i_file} ${s_file}
             # 预编译.i文件
             COMMAND ${CMAKE_CXX_COMPILER} -E -O0
                 -I${CMAKE_SOURCE_DIR}/include -I${CMAKE_SOURCE_DIR}/src
-                ${CMAKE_SOURCE_DIR}/src/${f_name}
-                -o ${CMAKE_CURRENT_BINARY_DIR}/${s_name}.i
+                ${f_path}
+                -o ${i_file}
             # 默认AT&T风格 -masm=intel
             COMMAND ${CMAKE_CXX_COMPILER} -S -fverbose-asm -O0
                 -I${CMAKE_SOURCE_DIR}/include -I${CMAKE_SOURCE_DIR}/src
-                ${CMAKE_SOURCE_DIR}/src/${f_name}
-                -o ${CMAKE_CURRENT_BINARY_DIR}/${s_name}.s
-            DEPENDS ${CMAKE_SOURCE_DIR}/src/${f_name}
-            COMMENT "Generating .i and assembly(.s) for ${s_name}"
+                ${f_path}
+                -o ${s_file}
+            DEPENDS ${f_path}
+            COMMENT "Generating ${s_name}.i and ${s_name}.s"
     )
     # make view_asm_main
     add_custom_target(view_${s_name}
