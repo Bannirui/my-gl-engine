@@ -3,19 +3,19 @@
 //
 #include "Hazel.h"
 
-class Sanbox : public Hazel::Application
+class Sandbox : public Hazel::Application
 {
 public:
-    Sanbox()
+    Sandbox()
     {
     }
 
-    ~Sanbox()
+    ~Sandbox()
     {
     }
 };
 
 Hazel::Application* Hazel::CreateApplication()
 {
-    return new Sanbox();
+    return new Sandbox();
 }

@@ -14,5 +14,6 @@ namespace Hazel
         void Run();
     };
 
+    // for entry point
     Application* CreateApplication();
 }
