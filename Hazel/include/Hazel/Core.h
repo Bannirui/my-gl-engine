@@ -4,4 +4,4 @@
 
 #pragma once
 
-#define HAZEL_API
+#define BIT(x) (1 << x)
