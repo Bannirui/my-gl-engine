@@ -3,12 +3,16 @@
 //
 
 #pragma once
+#include "Log.h"
 
 extern Hazel::Application* CreateApplication();
 
 int main(int argc, char** argv)
 {
-    printf("Running...\n");
+    Hazel::Log::Init();
+    HZ_CORE_WARN("Initializing Log");
+    HZ_INFO("Hello World!");
+
     auto app = Hazel::CreateApplication();
     app->Run();
     delete app;
