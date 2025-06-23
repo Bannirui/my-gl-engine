@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <string>
-
 #include "Hazel/Core.h"
 
 namespace Hazel
@@ -46,6 +44,8 @@ namespace Hazel
         virtual EventType GetEventType() const = 0;
         virtual const char* GetName() const = 0;
         virtual int GetCategoryFlags() const = 0;
+
+        // 特化fmt::formatter
         virtual std::string ToString() const { return GetName(); }
 
         bool IsInCategory(EventCategory category)

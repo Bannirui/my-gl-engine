@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <sstream>
-
 #include "Hazel/Events/Event.h"
 #include "Hazel/Core/MouseCodes.h"
 

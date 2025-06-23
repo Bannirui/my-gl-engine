@@ -12,6 +12,9 @@ file(GLOB_RECURSE srcs "${source_dir}/*.cpp")
 
 # lib
 add_library(${PROJECT_NAME} STATIC ${srcs})
+# PCH
+target_precompile_headers(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/hzpch.h")
+
 # link spdlog
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
 
