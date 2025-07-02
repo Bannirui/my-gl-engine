@@ -35,7 +35,7 @@ namespace Hazel
             ss << "KeyPressedEvent: " << m_KeyCode << " (repeat = " << m_RepeatCount << ")";
             return ss.str();
         }
-
+        EVENT_CLASS_TYPE(KeyPressed)
     private:
         int m_RepeatCount;
     };

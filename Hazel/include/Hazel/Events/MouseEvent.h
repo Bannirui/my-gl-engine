@@ -49,6 +49,8 @@ namespace Hazel
             ss << "MouseScrolledEvent: " << GetXOffset() << "," << GetYOffset();
             return ss.str();
         }
+        EVENT_CLASS_TYPE(MouseScrolled)
+        EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
     private:
         float m_XOffset, m_YOffset;
@@ -81,6 +83,7 @@ namespace Hazel
             ss << "MouseButtonPressedEvent: " << m_Button;
             return ss.str();
         }
+        EVENT_CLASS_TYPE(MouseButtonPressed)
     };
 
     class MouseButtonReleasedEvent : public MouseButtonEvent
