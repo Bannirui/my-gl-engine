@@ -5,27 +5,35 @@
 
 class ExampleLayer : public Hazel::Layer
 {
-    public:
-        ExampleLayer() : Layer("Example Layer") { }
+public:
+    ExampleLayer() : Layer("Example Layer") { }
 
-        void OnUpdate() override {
-            HZ_INFO("Example Layer::OnUpdate");
+    void OnUpdate() override {
+        if (Hazel::Input::IsKeyPressed(Hazel::Key::Tab)) {
+            HZ_TRACE("Tab key is pressed, poll");
         }
+    }
 
-        void OnEvent(Hazel::Event& e) override {
-            HZ_TRACE("Example Layer::OnEvent {0}", e.ToString());
+    void OnEvent(Hazel::Event& e) override {
+        if (e.GetEventType() == Hazel::EventType::KeyPressed) {
+            Hazel::KeyPressedEvent& e = (Hazel::KeyPressedEvent&)e;
+            if (e.GetKeyCode() == Hazel::Key::Tab) {
+                HZ_TRACE("Tab key is pressed, event");
+            }
+            HZ_TRACE("{0}", (char)e.GetKeyCode());
         }
+    }
 };
 
 class Sandbox : public Hazel::Application
 {
-    public:
-        Sandbox() {
-            PushLayer(new ExampleLayer());
-            PushOverlay(new Hazel::ImGuiLayer());
-        }
+public:
+    Sandbox() {
+        PushLayer(new ExampleLayer());
+        PushOverlay(new Hazel::ImGuiLayer());
+    }
 
-        ~Sandbox() { }
+    ~Sandbox() { }
 };
 
 Hazel::Application* Hazel::CreateApplication()
