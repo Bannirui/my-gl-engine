@@ -7,8 +7,9 @@
 #include "Hazel/Application.h"
 
 #include <GLAD/glad.h>
-#include <Hazel/Log.h>
-#include <Hazel/Core/Assert.h>
+
+#include "Hazel/Log.h"
+#include "Hazel/Core/Assert.h"
 
 namespace Hazel
 {

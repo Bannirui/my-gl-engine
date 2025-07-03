@@ -6,9 +6,9 @@
 
 #include <GLFW/glfw3.h>
 #include <imgui.h>
+#include <imgui_impl_opengl3.h>
 
 #include "hzpch.h"
-#include "platform/OpenGL/ImGuiOpenGLRenderer.h"
 #include "Hazel/Application.h"
 #include "Hazel/Event/MouseEvent.h"
 #include "Hazel/Core/KeyCodes.h"

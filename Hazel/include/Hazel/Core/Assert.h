@@ -4,6 +4,10 @@
 
 #pragma once
 
+#ifdef HZ_DEBUG
+    #define HZ_ENABLE_ASSERTS
+#endif
+
 #ifdef HZ_ENABLE_ASSERTS
     #define HZ_INTERNAL_ASSERT_IMPL(type, check, msg, ...) { if(!(check)) { HZ##type##ERROR(msg, __VA_ARGS__); HZ_DEBUGBREAK(); } }
     #define HZ_INTERNAL_ASSERT_WITH_MSG(type, check, ...) HZ_INTERNAL_ASSERT_IMPL(type, check, "Assertion failed: {0}", __VA_ARGS__)
