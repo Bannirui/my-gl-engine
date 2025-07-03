@@ -6,6 +6,9 @@
 
 #include "Hazel/Window.h"
 
+// 前向声明
+struct GLFWwindow;
+
 namespace Hazel
 {
 

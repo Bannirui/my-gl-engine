@@ -2,11 +2,12 @@
 // Created by rui ding on 2025/6/25.
 //
 
+#include "platform/mac/MacWindow.h"
+
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "hzpch.h"
-#include "platform/mac/MacWindow.h"
 
 #include "Hazel/Event/ApplicationEvent.h"
 #include "Hazel/Event/KeyEvent.h"

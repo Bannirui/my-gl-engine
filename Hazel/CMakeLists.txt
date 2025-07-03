@@ -16,6 +16,7 @@ add_library(${PROJECT_NAME} STATIC ${srcs})
 # public供Sandbox使用Hazel中的头文件
 target_include_directories(${PROJECT_NAME}
         PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        PRIVATE vendor/glm
 )
 # PCH
 target_precompile_headers(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/hzpch.h")
