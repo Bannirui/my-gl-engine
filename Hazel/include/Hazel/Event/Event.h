@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Hazel/Core.h"
+#include "hzpch.h"
 
 namespace Hazel
 {
@@ -45,7 +46,6 @@ public:
     virtual const char* GetName() const = 0;
     virtual int GetCategoryFlags() const = 0;
 
-    // 特化fmt::formatter
     virtual std::string ToString() const { return GetName(); }
 
     bool IsInCategory(EventCategory category)

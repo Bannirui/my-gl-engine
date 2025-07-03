@@ -11,28 +11,33 @@
 
 namespace Hazel
 {
-    class ImGuiLayer : public Hazel::Layer
-    {
-        public:
-            ImGuiLayer();
-            ~ImGuiLayer();
 
-            virtual void OnAttach();
-            virtual void OnDetach();
-            virtual void OnUpdate();
-            virtual void OnEvent(Event& e);
+class ImGuiLayer : public Hazel::Layer
+{
+public:
+  ImGuiLayer();
+  ~ImGuiLayer();
 
-        private:
-            bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-            bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-            bool OnMouseMovedEvent(MouseMovedEvent& e);
-            bool OnMouseScrolledEvent(MouseScrolledEvent& e);
-            bool OnKeyPressedEvent(KeyPressedEvent& e);
-            bool OnKeyReleasedEvent(KeyReleasedEvent& e);
-            bool OnKeyTypedEvent(KeyTypedEvent& e);
-            bool OnWindowResizeEvent(WindowResizeEvent& e);
+  virtual void OnAttach();
+  virtual void OnDetach();
+  virtual void OnUpdate();
+  virtual void OnEvent(Event& e);
+  virtual void OnImGuiRender();
 
-        private:
-            float m_Time = 0.0f;
-    };
+  void Begin();
+  void End();
+
+private:
+  bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
+  bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
+  bool OnMouseMovedEvent(MouseMovedEvent& e);
+  bool OnMouseScrolledEvent(MouseScrolledEvent& e);
+  bool OnKeyPressedEvent(KeyPressedEvent& e);
+  bool OnKeyReleasedEvent(KeyReleasedEvent& e);
+  bool OnKeyTypedEvent(KeyTypedEvent& e);
+  bool OnWindowResizeEvent(WindowResizeEvent& e);
+
+private:
+  float m_Time = 0.0f;
+};
 }

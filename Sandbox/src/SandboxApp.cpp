@@ -1,6 +1,9 @@
 //
 // Created by dingrui on 25-6-22.
 //
+
+#include <imgui.h>
+
 #include "Hazel.h"
 
 class ExampleLayer : public Hazel::Layer
@@ -23,6 +26,13 @@ public:
             HZ_TRACE("{0}", (char)event.GetKeyCode());
         }
     }
+
+    virtual void OnImGuiRender() override
+    {
+        ImGui::Begin("Test");
+        ImGui::Text("HELLO WORLD!");
+        ImGui::End();
+    }
 };
 
 class Sandbox : public Hazel::Application
@@ -30,7 +40,6 @@ class Sandbox : public Hazel::Application
 public:
     Sandbox() {
         PushLayer(new ExampleLayer());
-        PushOverlay(new Hazel::ImGuiLayer());
     }
 
     ~Sandbox() { }
