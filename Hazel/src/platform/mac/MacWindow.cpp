@@ -47,9 +47,17 @@ namespace Hazel {
             glfwSetErrorCallback(GLFWErrorCallback);
             s_GLFWInitialized = true;
         }
+        // OpenGL版本3.3
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        // 使用核心模式
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
         glfwMakeContextCurrent(m_Window);
-        // 有了上下文 开始初始化glad
+        // 有了上下文 开始初始化glad 加载处理显卡提供的驱动函数 以后才能使用gl函数
         succ = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         (void)succ;
         HZ_CORE_ASSERT(succ, "Could not intialize GLAD!");

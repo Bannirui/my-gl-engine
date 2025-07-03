@@ -4,6 +4,7 @@ project(Hazel VERSION 1.0 LANGUAGES CXX)
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/GLAD)
 add_subdirectory(vendor/GLFW)
+add_subdirectory(vendor/imgui)
 
 # OpenGL的API在mac上被弃用了 防止编译器warn
 add_definitions(-DGL_SILENCE_DEPRECATION)
@@ -23,4 +24,5 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC spdlog
         PUBLIC glad
         PUBLIC glfw
+        PUBLIC imgui
 )
