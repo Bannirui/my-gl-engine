@@ -11,7 +11,7 @@
 
 namespace Hazel
 {
-    Input* Input::s_Instance = nullptr;
+    Input* Input::s_Instance = new MacInput();
 
     bool MacInput::IsKeyPressedImpl(int keycode) {
         auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
