@@ -7,7 +7,7 @@
 #include "Layer.h"
 #include "LayerStack.h"
 #include "Hazel/Window.h"
-#include "Hazel/Events/ApplicationEvent.h"
+#include "Hazel/Event/ApplicationEvent.h"
 
 namespace Hazel
 {

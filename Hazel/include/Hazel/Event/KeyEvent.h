@@ -4,11 +4,12 @@
 
 #pragma once
 
-#include "Hazel/Events/Event.h"
+#include "Hazel/Event/Event.h"
 #include "Hazel/Core/KeyCodes.h"
 
 namespace Hazel
 {
+    // 键盘事件
     class KeyEvent : public Event
     {
     public:
@@ -17,9 +18,7 @@ namespace Hazel
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 
     protected:
-        KeyEvent(const KeyCode keycode): m_KeyCode(keycode)
-        {
-        }
+        KeyEvent(const KeyCode keycode): m_KeyCode(keycode) { }
 
         KeyCode m_KeyCode;
     };
@@ -43,9 +42,7 @@ namespace Hazel
     class KeyReleasedEvent : public KeyEvent
     {
     public:
-        KeyReleasedEvent(const KeyCode keycode) : KeyEvent(keycode)
-        {
-        }
+        KeyReleasedEvent(const KeyCode keycode) : KeyEvent(keycode) { }
 
         std::string ToString() const override
         {
@@ -57,12 +54,11 @@ namespace Hazel
         EVENT_CLASS_TYPE(KeyReleased)
     };
 
+    // 键盘输入
     class KeyTypedEvent : public KeyEvent
     {
     public:
-        KeyTypedEvent(const KeyCode keycode) : KeyEvent(keycode)
-        {
-        }
+        KeyTypedEvent(const KeyCode keycode) : KeyEvent(keycode) { }
 
         std::string ToString() const override
         {

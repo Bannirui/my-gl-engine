@@ -8,9 +8,9 @@
 #include "hzpch.h"
 #include "platform/mac/MacWindow.h"
 
-#include "Hazel/Events/ApplicationEvent.h"
-#include "Hazel/Events/KeyEvent.h"
-#include "Hazel/Events/MouseEvent.h"
+#include "Hazel/Event/ApplicationEvent.h"
+#include "Hazel/Event/KeyEvent.h"
+#include "Hazel/Event/MouseEvent.h"
 #include "Hazel/Core/Assert.h"
 #include "Hazel/Log.h"
 
@@ -100,6 +100,12 @@ namespace Hazel {
                     break;
                 }
             }
+        });
+        // 键盘输入监听
+        glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int codepoint) -> void {
+            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            KeyTypedEvent event(codepoint);
+            data.EventCallback(event);
         });
         // 监听glfw鼠标点击事件
         glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) -> void {

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Hazel/Events/Event.h"
+#include "Hazel/Event/Event.h"
 
 namespace Hazel
 {
