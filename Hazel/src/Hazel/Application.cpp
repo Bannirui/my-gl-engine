@@ -72,10 +72,6 @@ namespace Hazel
         m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
     }
 
-    Application::~Application()
-    {
-    }
-
     void Application::Run()
     {
         // 告诉GL状态机清屏的时候清成啥样

@@ -16,7 +16,7 @@ class ImGuiLayer : public Hazel::Layer
 {
 public:
   ImGuiLayer();
-  ~ImGuiLayer();
+  ~ImGuiLayer() = default;
 
   virtual void OnAttach();
   virtual void OnDetach();
