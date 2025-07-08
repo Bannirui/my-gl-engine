@@ -11,7 +11,6 @@
 #include "Hazel/Layer.h"
 #include "Hazel/LayerStack.h"
 #include "Hazel/renderer/Shader.h"
-#include "Hazel/renderer/Buffer.h"
 #include "Hazel/renderer/VertexArray.h"
 
 namespace Hazel
