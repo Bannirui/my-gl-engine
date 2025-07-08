@@ -37,9 +37,11 @@ namespace Hazel
         bool m_Running = true;
         LayerStack m_LayerStack;
 
-        // VAO VBO EBO
+        // VAO
         unsigned int m_VertexArray;
+        // VBO
         std::unique_ptr<VertexBuffer> m_VertexBuffer;
+        // EBO
         std::unique_ptr<IndexBuffer> m_IndexBuffer;
         std::unique_ptr<Shader> m_Shader;
 
