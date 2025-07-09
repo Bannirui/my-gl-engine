@@ -4,7 +4,7 @@
 
 #include "platform/opengl/OpenGLVertexArray.h"
 
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 
 namespace Hazel
 {

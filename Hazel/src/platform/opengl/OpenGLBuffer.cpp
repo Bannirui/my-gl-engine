@@ -4,7 +4,7 @@
 
 #include "platform/opengl/OpenGLBuffer.h"
 
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 
 namespace Hazel
 {
