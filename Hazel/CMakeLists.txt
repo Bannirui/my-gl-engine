@@ -5,38 +5,48 @@ include(FetchContent)
 
 # glad的代码生成依赖py和glad
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
-set(GLAD_VENV "${CMAKE_BINARY_DIR}/.venv")
-set(GLAD_PYTHON "${GLAD_VENV}/bin/python")
-# 检查glad命令是否可用
-execute_process(
-        COMMAND ${Python3_EXECUTABLE} -m glad --version
-        RESULT_VARIABLE GLAD_RESULT
-        OUTPUT_VARIABLE GLAD_VERSION
-        ERROR_VARIABLE GLAD_ERROR
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_STRIP_TRAILING_WHITESPACE
-)
-if(NOT GLAD_RESULT EQUAL 0)
-    message(STATUS "Glad not found. Setting up local virtualenv...")
+set(MY_VENV "${CMAKE_BINARY_DIR}/.venv")
+if (WIN32)
+    set(MY_PYTHON "${MY_VENV}/bin/python.exe")
+else ()
+    set(MY_PYTHON "${MY_VENV}/bin/python")
+endif ()
+# py虚拟环境
+if(NOT EXISTS "${MY_PYTHON}")
+    message(STATUS "Creating virtualenv at ${MY_VENV}")
     # 创建.venv
     execute_process(
-            COMMAND ${Python3_EXECUTABLE} -m venv ${GLAD_VENV}
-            RESULT_VARIABLE VENV_RESULT
+            COMMAND ${Python3_EXECUTABLE} -m venv "${MY_VENV}"
+            RESULT_VARIABLE VENV_CREATE_RESULT
     )
-    if(NOT VENV_RESULT EQUAL 0)
-        message(FATAL_ERROR "Failed to create virtualenv at ${GLAD_VENV}")
+    if(NOT VENV_CREATE_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to create virtual environment at ${MY_VENV}")
     endif()
+else()
+    message(STATUS "Found existing virtualenv: ${MY_PYTHON}")
+endif()
+# 检查glad命令
+execute_process(
+        COMMAND ${MY_PYTHON} -m glad --help
+        RESULT_VARIABLE GLAD_RET
+        OUTPUT_QUIET
+        ERROR_QUIET
+)
+if(NOT GLAD_RET EQUAL 0)
+    message(STATUS "Installing glad in venv...")
     # 安装glad到虚拟环境中
+    execute_process(COMMAND ${MY_PYTHON} -m pip install --upgrade pip)
     execute_process(
-            COMMAND ${GLAD_VENV}/bin/pip install glad
-            RESULT_VARIABLE PIP_RESULT
-            OUTPUT_VARIABLE PIP_OUT
-            ERROR_VARIABLE PIP_ERR
+            COMMAND ${MY_PYTHON} -m pip install glad --timeout 60 -i https://pypi.tuna.tsinghua.edu.cn/simple
+            RESULT_VARIABLE GLAD_INSTALL_RET
+            ERROR_VARIABLE GLAD_INSTALL_ERR
     )
-    if(NOT PIP_RESULT EQUAL 0)
-        message(FATAL_ERROR "Failed to install glad in virtualenv:\n${PIP_ERR}")
+    if(NOT GLAD_INSTALL_RET EQUAL 0)
+        message(FATAL_ERROR "Failed to install glad in virtualenv:\n${GLAD_INSTALL_ERR}")
     endif()
-    message(STATUS "Glad installed successfully in ${GLAD_VENV}")
+    message(STATUS "Glad installed successfully in ${MY_VENV}")
+else ()
+    message(STATUS "Glad already exist in ${MY_VENV}")
 endif()
 
 # spdlog
@@ -79,7 +89,7 @@ add_custom_command(
         OUTPUT
             ${GLAD_GENERATED_DIR}/src/glad.c
             ${GLAD_GENERATED_DIR}/include/glad/glad.h
-        COMMAND ${GLAD_PYTHON} -m glad
+        COMMAND ${MY_PYTHON} -m glad
           --generator c
           --spec gl
           --api gl=3.3
@@ -88,20 +98,17 @@ add_custom_command(
         COMMENT "Generating glad loader with glad2"
         VERBATIM
 )
-# 自定义目标glad-gen
+# glad
 add_custom_target(glad-gen
         DEPENDS
         ${GLAD_GENERATED_DIR}/src/glad.c
         ${GLAD_GENERATED_DIR}/include/glad/glad.h
 )
-# glad
-add_library(glad STATIC
-        ${GLAD_GENERATED_DIR}/src/glad.c
-)
+add_library(glad STATIC ${GLAD_GENERATED_DIR}/src/glad.c)
 target_include_directories(glad PUBLIC ${GLAD_GENERATED_DIR}/include)
 add_dependencies(glad glad-gen)
 
-# ImGui
+# ImGui本身不是用cmake组织的 需要手动编译成库
 file(GLOB IMGUI_SOURCES
         ${imgui_SOURCE_DIR}/imgui.cpp
         ${imgui_SOURCE_DIR}/imgui_draw.cpp
@@ -118,8 +125,6 @@ target_include_directories(imgui PUBLIC
 )
 target_link_libraries(imgui PUBLIC glfw)
 
-# OpenGL的API在mac上被弃用了 防止编译器warn
-add_definitions(-DGL_SILENCE_DEPRECATION)
 # 源文件
 file(GLOB_RECURSE srcs "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE hdrs "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
@@ -140,8 +145,8 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC glm::glm
 )
 
-# Platform-specific OpenGL linkage
 if (APPLE)
+    # OpenGL的API在mac上被弃用了 防止编译器warn
     add_definitions(-DGL_SILENCE_DEPRECATION)
 elseif(UNIX)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
