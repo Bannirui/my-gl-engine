@@ -4,7 +4,8 @@
 
 #include "Hazel/Application.h"
 
-#include <GLAD/glad.h>
+#include "Hazel/renderer/Renderer.h"
+#include "Hazel/renderer/RendererCommand.h"
 
 #include "Hazel/Core/Assert.h"
 #include "Hazel/Log.h"
@@ -132,20 +133,22 @@ namespace Hazel
 
     void Application::Run()
     {
-        // 告诉GL状态机清屏的时候清成啥样
-        glClearColor(1.0f, 0.5f, 1.0f, 0.7f);
         while (m_Running)
         {
+            // 告诉GL状态机清屏的时候清成啥样
+            RendererCommand::SetClearColor({0.1f, 0.5f, 1.0f, 0.7f});
             // 每帧都要清屏
-            glClear(GL_COLOR_BUFFER_BIT);
+            RendererCommand::Clear();
+
+            Renderer::BeginScene();
 
             m_BlueShader->Bind();
-            m_SquareVA->Bind();
-            glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::Submit(m_SquareVA);
 
             m_Shader->Bind();
-            m_VertexArray->Bind();
-            glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::Submit(m_VertexArray);
+
+            Renderer::EndScene();
 
             for (Layer* layer : m_LayerStack) layer->OnUpdate();
 
