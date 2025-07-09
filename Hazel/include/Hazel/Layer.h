@@ -7,6 +7,7 @@
 #include <string>
 
 #include "Hazel/Event/Event.h"
+#include "Hazel/Core/Timestep.h"
 
 namespace Hazel
 {
@@ -24,7 +25,7 @@ namespace Hazel
         {
         }
 
-        virtual void OnUpdate()
+        virtual void OnUpdate(Timestep ts)
         {
         }
 
