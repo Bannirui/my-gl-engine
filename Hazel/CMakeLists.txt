@@ -21,11 +21,11 @@ target_include_directories(${PROJECT_NAME}
 target_precompile_headers(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/hzpch.h")
 # lib
 target_link_libraries(${PROJECT_NAME}
-        PUBLIC spdlog::spdlog
+        PUBLIC spdlog
         PUBLIC glad
         PUBLIC glfw
         PUBLIC imgui
-        PUBLIC glm::glm
+        PUBLIC glm
         PUBLIC stb
 )
 
