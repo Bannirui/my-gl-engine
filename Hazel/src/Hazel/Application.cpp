@@ -32,9 +32,9 @@ namespace Hazel
     {
         while (m_Running)
         {
-            float time = (float)glfwGetTime();
+            float    time     = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;
-            m_LastFrameTime = time;
+            m_LastFrameTime   = time;
 
             for (Layer* layer : m_LayerStack) layer->OnUpdate(timestep);
 
