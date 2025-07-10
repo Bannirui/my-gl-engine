@@ -8,3 +8,5 @@ FetchContent_Declare(
 )
 # 下载依赖的源码
 FetchContent_MakeAvailable(glm)
+# 启用glm中实验性质的模块
+add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
