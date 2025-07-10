@@ -66,6 +66,7 @@ add_custom_command(
           --api gl=3.3
           --profile core
           --out-path ${GLAD_GENERATED_DIR}
+          --extensions="" # glad2没做隔离 会把所有函数都生成 禁用所有扩展 避免看到4.x的高版本gl函数
         COMMENT "Generating glad loader with glad2"
         VERBATIM
 )
