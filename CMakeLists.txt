@@ -9,6 +9,22 @@ if (USE_PROXY)
     set(CMAKE_DOWNLOAD_AGENT "curl")
 endif ()
 
+# 平台判断并设置默认编译器 仅在未手动指定时生效
+if(NOT DEFINED CMAKE_C_COMPILER AND NOT DEFINED CMAKE_CXX_COMPILER)
+    if(APPLE)
+        message(STATUS "Detected Apple platform")
+        set(CMAKE_C_COMPILER /usr/bin/clang CACHE STRING "C compiler" FORCE)
+        set(CMAKE_CXX_COMPILER /usr/bin/clang++ CACHE STRING "C++ compiler" FORCE)
+    elseif(UNIX)
+        message(STATUS "Detected Linux platform")
+        set(CMAKE_C_COMPILER /usr/bin/gcc CACHE STRING "C compiler" FORCE)
+        set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "C++ compiler" FORCE)
+    else()
+        message(FATAL_ERROR "Unsupported platform")
+    endif()
+else()
+    message(STATUS "Using user-defined compiler: ${CMAKE_C_COMPILER}, ${CMAKE_CXX_COMPILER}")
+endif()
 # 项目信息
 project(my-cpp-tutorial VERSION 1.0)
 
