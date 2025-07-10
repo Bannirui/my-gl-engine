@@ -73,8 +73,8 @@ namespace Hazel
         const auto& layout = vertexBuffer->GetLayout();
         for (const auto& element : layout)
         {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index,
+            glEnableVertexAttribArray(index + m_VertexBufferIndexOffset);
+            glVertexAttribPointer(index + m_VertexBufferIndexOffset,
                                   element.GetComponentCount(),
                                   ShaderDataTypeToOpenGLBaseType(element.Type),
                                   element.Normalized ? GL_TRUE : GL_FALSE,
