@@ -26,7 +26,7 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC glfw
         PUBLIC imgui
         PUBLIC glm::glm
-        PUBLIC stb_image
+        PUBLIC stb
 )
 
 if (APPLE)

@@ -1,5 +1,14 @@
 cmake_minimum_required(VERSION 3.15)
 
+option(USE_PROXY "Enable proxy for FetchContent for file download" ON)
+if (USE_PROXY)
+    message(STATUS "Proxy is enabled")
+    set(ENV{http_proxy} "http://127.0.0.1:7890")
+    set(ENV{https_proxy} "http://127.0.0.1:7890")
+    set(CMAKE_TLS_VERIFY OFF)
+    set(CMAKE_DOWNLOAD_AGENT "curl")
+endif ()
+
 # 项目信息
 project(my-cpp-tutorial VERSION 1.0)
 

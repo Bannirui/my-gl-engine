@@ -12,5 +12,5 @@ FetchContent_MakeAvailable(stb)
 set(STB_IMAGE_CPP "${CMAKE_BINARY_DIR}/stb_image_impl.cpp")
 file(WRITE ${STB_IMAGE_CPP}
         "#define STB_IMAGE_IMPLEMENTATION\n#include \"stb_image.h\"\n")
-add_library(stb_image STATIC ${STB_IMAGE_CPP})
-target_include_directories(stb_image PUBLIC ${stb_SOURCE_DIR})
+add_library(stb STATIC ${STB_IMAGE_CPP})
+target_include_directories(stb PUBLIC ${stb_SOURCE_DIR})
