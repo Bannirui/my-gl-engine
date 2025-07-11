@@ -13,7 +13,7 @@ class ExampleLayer : public Hazel::Layer
 {
 public:
     ExampleLayer()
-        : Layer("Example Layer"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f)
+        : Layer("Example Layer"), m_CameraController(1280.0f / 720.0f)
     {
         m_VertexArray.reset(Hazel::VertexArray::Create());
 
@@ -71,22 +71,11 @@ public:
 
     void OnUpdate(Hazel::Timestep ts) override
     {
-        if (Hazel::Input::IsKeyPressed(Hazel::Key::Left)) m_CameraPosition.x -= m_CameraMoveSpeed * ts;
-        else if (Hazel::Input::IsKeyPressed(Hazel::Key::Right)) m_CameraPosition.x += m_CameraMoveSpeed * ts;
-
-        if (Hazel::Input::IsKeyPressed(Hazel::Key::Up)) m_CameraPosition.y += m_CameraMoveSpeed * ts;
-        else if (Hazel::Input::IsKeyPressed(Hazel::Key::Down)) m_CameraPosition.y -= m_CameraMoveSpeed * ts;
-
-        if (Hazel::Input::IsKeyPressed(Hazel::Key::A)) m_CameraRotation += m_CameraRotationSpeed * ts;
-        if (Hazel::Input::IsKeyPressed(Hazel::Key::D)) m_CameraRotation -= m_CameraRotationSpeed * ts;
-
+        m_CameraController.OnUpdate(ts);
         Hazel::RendererCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1});
         Hazel::RendererCommand::Clear();
 
-        m_Camera.SetPosition(m_CameraPosition);
-        m_Camera.SetRotation(m_CameraRotation);
-
-        Hazel::Renderer::BeginScene(m_Camera);
+        Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -105,7 +94,7 @@ public:
         }
 
         m_Texture->Bind();
-        auto textureShader= m_ShaderLibrary.Get("texture_3_3");
+        auto textureShader = m_ShaderLibrary.Get("texture_3_3");
         Hazel::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
         m_Texture2->Bind();
         Hazel::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
@@ -117,6 +106,7 @@ public:
 
     void OnEvent(Hazel::Event& e) override
     {
+        m_CameraController.OnEvent(e);
     }
 
     virtual void OnImGuiRender() override
@@ -131,17 +121,11 @@ private:
     Hazel::Ref<Hazel::Shader>      m_Shader;
     Hazel::Ref<Hazel::VertexArray> m_VertexArray;
 
-    Hazel::Ref<Hazel::Shader>      m_FlatColorShader;
-    Hazel::Ref<Hazel::VertexArray> m_SquareVA;
-    Hazel::Ref<Hazel::Texture2D>   m_Texture, m_Texture2;
-
-    Hazel::OrthographicCamera m_Camera;
-    glm::vec3                 m_CameraPosition;
-    float                     m_CameraMoveSpeed = 5.0f;
-
-    float     m_CameraRotation      = 0.0f;
-    float     m_CameraRotationSpeed = 180.0f;
-    glm::vec3 m_SquareColor         = {0.2f, 0.3f, 0.8f};
+    Hazel::Ref<Hazel::Shader>           m_FlatColorShader;
+    Hazel::Ref<Hazel::VertexArray>      m_SquareVA;
+    Hazel::Ref<Hazel::Texture2D>        m_Texture, m_Texture2;
+    Hazel::OrthographicCameraController m_CameraController;
+    glm::vec3                           m_SquareColor = {0.2f, 0.3f, 0.8f};
 };
 
 class Sandbox : public Hazel::Application
