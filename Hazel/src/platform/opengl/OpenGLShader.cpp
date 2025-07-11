@@ -27,6 +27,21 @@ namespace Hazel
         std::string source        = ReadFile(srcPath);
         auto        shaderSources = PreProcess(source);
         Compile(shaderSources);
+        // 从shader源码文件名中提取名字
+        auto lastSlash = srcPath.find_last_of("/\\");
+        lastSlash      = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+        auto lastDot   = srcPath.rfind('.');
+        auto count     = lastDot == std::string::npos ? srcPath.size() - lastSlash : lastDot - lastSlash;
+        m_Name         = srcPath.substr(lastSlash, count);
+    }
+
+    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+        : m_Name(name)
+    {
+        std::unordered_map<GLenum, std::string> sources;
+        sources[GL_VERTEX_SHADER]   = vertexSrc;
+        sources[GL_FRAGMENT_SHADER] = fragmentSrc;
+        Compile(sources);
     }
 
     std::string OpenGLShader::ReadFile(const std::string& filepath)
@@ -74,8 +89,10 @@ namespace Hazel
 
     void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
     {
-        GLuint              program = glCreateProgram();
-        std::vector<GLenum> shaderIDs(shaderSources.size());
+        GLuint program = glCreateProgram();
+        HZ_CORE_ASSERT(shaderSources.size() <= 2, "We only support 2 shaders for now");
+        std::array<GLenum, 2> glShaderIDs;
+        int                   glShaderIDIndex = 0;
         for (auto& kv : shaderSources)
         {
             GLenum             type   = kv.first;
@@ -102,7 +119,7 @@ namespace Hazel
                 break;;
             }
             glAttachShader(program, shader);
-            shaderIDs.push_back(shader);
+            glShaderIDs[glShaderIDIndex++] = shader;
         }
         m_RendererID = program;
         // 链接成shader program
@@ -116,22 +133,14 @@ namespace Hazel
             std::vector<GLchar> infoLog(maxLength);
             glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
             glDeleteProgram(program);
-            for (auto id : shaderIDs)
+            for (auto id : glShaderIDs)
                 glDeleteShader(id);
             HZ_CORE_ERROR("{0}", infoLog.data());
             HZ_CORE_ASSERT(false, "Shader link failure!");
             return;
         }
-        for (auto id : shaderIDs)
+        for (auto id : glShaderIDs)
             glDetachShader(program, id);
-    }
-
-    OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
-    {
-        std::unordered_map<GLenum, std::string> shaderSources;
-        shaderSources[GL_VERTEX_SHADER]   = vertexSrc;
-        shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
-        Compile(shaderSources);
     }
 
     OpenGLShader::~OpenGLShader()
