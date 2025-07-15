@@ -66,13 +66,16 @@ if(NOT EXISTS ${GLAD_C_FILE} OR NOT EXISTS ${GLAD_H_FILE})
             OUTPUT
                 ${GLAD_GENERATED_DIR}/src/glad.c
                 ${GLAD_GENERATED_DIR}/include/glad/glad.h
-            COMMAND ${MY_PYTHON} -m glad
-                --generator c
-                --spec gl
-                --api gl=3.3
-                --profile core
-                --out-path ${GLAD_GENERATED_DIR}
-                --extensions="" # glad2没做隔离 会把所有函数都生成 禁用所有扩展 避免看到4.x的高版本gl函数
+            COMMAND ${CMAKE_COMMAND} -E env
+                http_proxy=http://127.0.0.1:7890
+                https_proxy=http://127.0.0.1:7890
+                ${MY_PYTHON} -m glad
+                    --generator c
+                    --spec gl
+                    --api gl=3.3
+                    --profile core
+                    --out-path ${GLAD_GENERATED_DIR}
+                    --extensions="" # glad2没做隔离 会把所有函数都生成 禁用所有扩展 避免看到4.x的高版本gl函数
                 COMMENT "Generating glad loader with glad2"
                 VERBATIM
     )
