@@ -4,6 +4,8 @@
 
 #include "platform/opengl/OpenGLVertexArray.h"
 
+#include "spdlog/fmt/bundled/base.h"
+
 #include <glad/glad.h>
 
 namespace Hazel
@@ -69,19 +71,19 @@ namespace Hazel
         glBindVertexArray(m_RendererID);
         vertexBuffer->Bind();
 
+        uint32_t    index  = 0;
         const auto& layout = vertexBuffer->GetLayout();
         for (const auto& element : layout)
         {
-            glEnableVertexAttribArray(m_VertexBufferIndex);
-            glVertexAttribPointer(m_VertexBufferIndex,
-                                  element.GetComponentCount(),
-                                  ShaderDataTypeToOpenGLBaseType(element.Type),
-                                  element.Normalized ? GL_TRUE : GL_FALSE,
+            glEnableVertexAttribArray(index + m_VertexBufferIndex);
+            glVertexAttribPointer(index + m_VertexBufferIndex, element.GetComponentCount(),
+                                  ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized ? GL_TRUE : GL_FALSE,
                                   layout.GetStride(),
                                   reinterpret_cast<const void*>(static_cast<uintptr_t>(element.Offset)));
             m_VertexBufferIndex++;
         }
         m_VertexBuffers.push_back(vertexBuffer);
+        m_VertexBufferIndex += layout.GetElements().size();
     }
 
     void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
@@ -91,4 +93,4 @@ namespace Hazel
 
         m_IndexBuffer = indexBuffer;
     }
-}
+}  // namespace Hazel

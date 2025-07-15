@@ -11,7 +11,7 @@ namespace Hazel
 {
     class OpenGLTexture2D : public Texture2D
     {
-    public:
+       public:
         /**
          * @param path 图片相对路径
          */
@@ -23,9 +23,9 @@ namespace Hazel
 
         virtual void Bind(uint32_t slot = 0) const override;
 
-    private:
+       private:
         std::string m_Path;
-        uint32_t    m_Width, m_Height;
+        int         m_Width, m_Height;
         uint32_t    m_RendererID;
     };
-}
+}  // namespace Hazel

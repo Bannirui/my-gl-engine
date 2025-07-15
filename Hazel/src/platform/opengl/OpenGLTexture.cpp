@@ -11,17 +11,14 @@
 
 namespace Hazel
 {
-    OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
-        : m_Path(path)
+    OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_Path(path)
     {
-        int width, height, channels;
+        int channels;
         // 转换坐标原点 左上角->左下角
         stbi_set_flip_vertically_on_load(1);
         // 读图片
-        stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+        stbi_uc* data = stbi_load(path.c_str(), &m_Width, &m_Height, &channels, STBI_rgb_alpha);
         HZ_CORE_ASSERT(data, "Failed to load image!");
-        m_Width  = width;
-        m_Height = height;
 
         GLenum internalFormat = 0, dataFormat = 0;
         if (channels == 4)
@@ -42,7 +39,7 @@ namespace Hazel
         // 绑定纹理单元 不显式激活纹理单元 默认用0号纹理单元
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
         // 开辟显存 传输图片数据
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
         // 纹理过滤器
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -58,4 +55,4 @@ namespace Hazel
     {
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
     }
-}
+}  // namespace Hazel
