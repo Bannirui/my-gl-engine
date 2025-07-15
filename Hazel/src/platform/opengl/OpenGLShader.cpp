@@ -54,7 +54,8 @@ namespace Hazel
             result.resize(in.tellg());
             in.seekg(0, std::ios::beg);
             in.read(&result[0], result.size());
-            in.close();;
+            in.close();
+            ;
         }
         else
         {
@@ -77,12 +78,10 @@ namespace Hazel
             size_t      begin = pos + typeTokenLength + 1;
             std::string type  = source.substr(begin, eol - begin);
             HZ_CORE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specified");
-            size_t nextLinePos                        = source.find_first_not_of("\r\n", eol);
-            pos                                       = source.find(typeToken, nextLinePos);
-            shaderSources[ShaderTypeFromString(type)] = source.substr(nextLinePos,
-                                                                      pos - (nextLinePos == std::string::npos
-                                                                                 ? source.size() - 1
-                                                                                 : nextLinePos));
+            size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+            pos                = source.find(typeToken, nextLinePos);
+            shaderSources[ShaderTypeFromString(type)] =
+                source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
         }
         return shaderSources;
     }
@@ -116,7 +115,8 @@ namespace Hazel
                 glDeleteShader(shader);
                 HZ_CORE_ERROR("{0}", infoLog.data());
                 HZ_CORE_ASSERT(false, "Shader compilation failure!");
-                break;;
+                break;
+                ;
             }
             glAttachShader(program, shader);
             glShaderIDs[glShaderIDIndex++] = shader;
@@ -133,14 +133,16 @@ namespace Hazel
             std::vector<GLchar> infoLog(maxLength);
             glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
             glDeleteProgram(program);
-            for (auto id : glShaderIDs)
-                glDeleteShader(id);
+            for (auto id : glShaderIDs) glDeleteShader(id);
             HZ_CORE_ERROR("{0}", infoLog.data());
             HZ_CORE_ASSERT(false, "Shader link failure!");
             return;
         }
         for (auto id : glShaderIDs)
+        {
             glDetachShader(program, id);
+            glDeleteShader(id);
+        }
     }
 
     OpenGLShader::~OpenGLShader()
@@ -192,4 +194,4 @@ namespace Hazel
     {
         glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
     }
-}
+}  // namespace Hazel
