@@ -14,6 +14,7 @@
 #include "Hazel/Event/MouseEvent.h"
 #include "Hazel/Core/Assert.h"
 #include "Hazel/Log.h"
+#include "platform/opengl/OpenGLContext.h"
 
 namespace Hazel
 {
@@ -63,100 +64,104 @@ namespace Hazel
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-        m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-        glfwMakeContextCurrent(m_Window);
-        // 有了上下文 开始初始化glad 加载处理显卡提供的驱动函数 以后才能使用gl函数
-        succ = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-        (void)succ;
-        HZ_CORE_ASSERT(succ, "Could not intialize GLAD!");
+        m_Window  = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+        m_Context = CreateScope<OpenGLContext>(m_Window);
+        m_Context->Init();
         // 缓存到glfw的窗口中 将来可以从里面取出来用
         glfwSetWindowUserPointer(m_Window, &m_Data);
         SetVSync(true);
         // 向glfw窗体注册事件监听
-        glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) -> void
-        {
-            // 从glfw窗体中拿到缓存
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            // 窗口新的大小
-            data.Width  = width;
-            data.Height = height;
-            WindowResizeEvent event(width, height);
-            data.EventCallback(event);
-        });
+        glfwSetWindowSizeCallback(m_Window,
+                                  [](GLFWwindow* window, int width, int height) -> void
+                                  {
+                                      // 从glfw窗体中拿到缓存
+                                      WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+                                      // 窗口新的大小
+                                      data.Width  = width;
+                                      data.Height = height;
+                                      WindowResizeEvent event(width, height);
+                                      data.EventCallback(event);
+                                  });
         // glfw窗体关闭事件监听
-        glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) -> void
-        {
-            WindowData&      data = *(WindowData*)glfwGetWindowUserPointer(window);
-            WindowCloseEvent event;
-            data.EventCallback(event);
-        });
+        glfwSetWindowCloseCallback(m_Window,
+                                   [](GLFWwindow* window) -> void
+                                   {
+                                       WindowData&      data = *(WindowData*)glfwGetWindowUserPointer(window);
+                                       WindowCloseEvent event;
+                                       data.EventCallback(event);
+                                   });
         // 监听glfw的键盘事件
-        glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) -> void
-        {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            switch (action)
-            {
-                case GLFW_PRESS:
-                {
-                    KeyPressedEvent event(key, 0);
-                    data.EventCallback(event);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    KeyReleasedEvent event(key);
-                    data.EventCallback(event);
-                    break;
-                }
-                case GLFW_REPEAT:
-                {
-                    KeyPressedEvent event(key, 1);
-                    data.EventCallback(event);
-                    break;
-                }
-            }
-        });
+        glfwSetKeyCallback(m_Window,
+                           [](GLFWwindow* window, int key, int scancode, int action, int mods) -> void
+                           {
+                               WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+                               switch (action)
+                               {
+                                   case GLFW_PRESS:
+                                   {
+                                       KeyPressedEvent event(key, 0);
+                                       data.EventCallback(event);
+                                       break;
+                                   }
+                                   case GLFW_RELEASE:
+                                   {
+                                       KeyReleasedEvent event(key);
+                                       data.EventCallback(event);
+                                       break;
+                                   }
+                                   case GLFW_REPEAT:
+                                   {
+                                       KeyPressedEvent event(key, 1);
+                                       data.EventCallback(event);
+                                       break;
+                                   }
+                               }
+                           });
         // 键盘输入监听
-        glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int codepoint) -> void
-        {
-            WindowData&   data = *(WindowData*)glfwGetWindowUserPointer(window);
-            KeyTypedEvent event(codepoint);
-            data.EventCallback(event);
-        });
+        glfwSetCharCallback(m_Window,
+                            [](GLFWwindow* window, unsigned int codepoint) -> void
+                            {
+                                WindowData&   data = *(WindowData*)glfwGetWindowUserPointer(window);
+                                KeyTypedEvent event(codepoint);
+                                data.EventCallback(event);
+                            });
         // 监听glfw鼠标点击事件
-        glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) -> void
-        {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            switch (action)
-            {
-                case GLFW_PRESS:
-                {
-                    MouseButtonPressedEvent event(button);
-                    data.EventCallback(event);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    MouseButtonReleasedEvent event(button);
-                    data.EventCallback(event);
-                    break;
-                }
-            }
-        });
+        glfwSetMouseButtonCallback(m_Window,
+                                   [](GLFWwindow* window, int button, int action, int mods) -> void
+                                   {
+                                       WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+                                       switch (action)
+                                       {
+                                           case GLFW_PRESS:
+                                           {
+                                               MouseButtonPressedEvent event(button);
+                                               data.EventCallback(event);
+                                               break;
+                                           }
+                                           case GLFW_RELEASE:
+                                           {
+                                               MouseButtonReleasedEvent event(button);
+                                               data.EventCallback(event);
+                                               break;
+                                           }
+                                       }
+                                   });
         // 监听鼠标滚轮
-        glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xoffset, double yoffset) -> void
-        {
-            WindowData&        data = *(WindowData*)glfwGetWindowUserPointer(window);
-            MouseScrolledEvent event((float)xoffset, (float)yoffset);
-            data.EventCallback(event);
-        });
+        glfwSetScrollCallback(m_Window,
+                              [](GLFWwindow* window, double xoffset, double yoffset) -> void
+                              {
+                                  WindowData&        data = *(WindowData*)glfwGetWindowUserPointer(window);
+                                  MouseScrolledEvent event((float)xoffset, (float)yoffset);
+                                  data.EventCallback(event);
+                              });
         // 监听鼠标位置
-        glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) -> void
-        {
-            WindowData&     data = *(WindowData*)glfwGetWindowUserPointer(window);
-            MouseMovedEvent event((float)xpos, (float)ypos);
-            data.EventCallback(event);
-        });
+        glfwSetCursorPosCallback(m_Window,
+                                 [](GLFWwindow* window, double xpos, double ypos) -> void
+                                 {
+                                     WindowData&     data = *(WindowData*)glfwGetWindowUserPointer(window);
+                                     MouseMovedEvent event((float)xpos, (float)ypos);
+                                     data.EventCallback(event);
+                                 });
     }
 
     void MacWindow::Shutdown()
@@ -188,4 +193,4 @@ namespace Hazel
     {
         return m_Data.VSync;
     }
-}
+}  // namespace Hazel

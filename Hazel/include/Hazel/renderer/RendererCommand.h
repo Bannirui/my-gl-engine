@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Hazel/Core.h"
 #include "Hazel/renderer/RendererAPI.h"
 
 namespace Hazel
@@ -37,6 +38,6 @@ namespace Hazel
         }
 
     private:
-        static RendererAPI* s_RendererAPI;
+        static Scope<RendererAPI> s_RendererAPI;
     };
 }

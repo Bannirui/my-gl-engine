@@ -5,7 +5,6 @@
 #include "platform/mac/MacInput.h"
 
 #include <GLFW/glfw3.h>
-#include <Hazel/Core/KeyCodes.h>
 
 #include "Hazel/Application.h"
 
@@ -46,4 +45,4 @@ namespace Hazel
         auto [x, y] = GetMousePositionImpl();
         return y;
     }
-}
+}  // namespace Hazel
