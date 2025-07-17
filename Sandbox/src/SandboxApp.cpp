@@ -8,26 +8,22 @@
 
 #include "Hazel.h"
 #include "platform/opengl/OpenGLShader.h"
+#include "Hazel/EntryPoint.h"
+#include "Sandbox2D.h"
 
 class ExampleLayer : public Hazel::Layer
 {
 public:
-    ExampleLayer()
-        : Layer("Example Layer"), m_CameraController(1280.0f / 720.0f)
+    ExampleLayer() : Layer("Example Layer"), m_CameraController(1280.0f / 720.0f)
     {
-        m_VertexArray.reset(Hazel::VertexArray::Create());
+        m_VertexArray = Hazel::VertexArray::Create();
 
-        float vertices[3 * 7] = {
-            -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
-            0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
-            0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
-        };
+        float vertices[3 * 7] = {-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f, 0.5f, -0.5f, 0.0f, 0.2f,
+                                 0.3f,  0.8f,  1.0f, 0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f,  1.0f};
         Hazel::Ref<Hazel::VertexBuffer> vertexBuffer;
         vertexBuffer.reset(Hazel::VertexBuffer::Create(vertices, sizeof(vertices)));
-        Hazel::BufferLayout layout = {
-            {Hazel::ShaderDataType::Float3, "a_Position"},
-            {Hazel::ShaderDataType::Float4, "a_Color"}
-        };
+        Hazel::BufferLayout layout = {{Hazel::ShaderDataType::Float3, "a_Position"},
+                                      {Hazel::ShaderDataType::Float4, "a_Color"}};
         vertexBuffer->SetLayout(layout);
         m_VertexArray->AddVertexBuffer(vertexBuffer);
 
@@ -36,14 +32,10 @@ public:
         indexBuffer.reset(Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
-        m_SquareVA.reset(Hazel::VertexArray::Create());
-        float squareVertices[5 * 4] = {
-            // xyz              // uv
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f
-        };
+        m_SquareVA                  = Hazel::VertexArray::Create();
+        float squareVertices[5 * 4] = {// xyz              // uv
+                                       -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,
+                                       0.5f,  0.5f,  0.0f, 1.0f, 1.0f, -0.5f, 0.5f,  0.0f, 0.0f, 1.0f};
 
         Hazel::Ref<Hazel::VertexBuffer> squareVB;
         squareVB.reset(Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
@@ -80,8 +72,8 @@ public:
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
         std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColorShader)->Bind();
-        std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColorShader)->
-            UploadUniformFloat3("u_Color", m_SquareColor);
+        std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColorShader)
+            ->UploadUniformFloat3("u_Color", m_SquareColor);
 
         for (int y = 0; y < 20; y++)
         {
@@ -104,10 +96,7 @@ public:
         Hazel::Renderer::EndScene();
     }
 
-    void OnEvent(Hazel::Event& e) override
-    {
-        m_CameraController.OnEvent(e);
-    }
+    void OnEvent(Hazel::Event& e) override { m_CameraController.OnEvent(e); }
 
     virtual void OnImGuiRender() override
     {
@@ -131,11 +120,9 @@ private:
 class Sandbox : public Hazel::Application
 {
 public:
-    Sandbox() { PushLayer(new ExampleLayer()); }
+    Sandbox() { PushLayer(new Sandbox2D()); }
 
-    ~Sandbox()
-    {
-    }
+    ~Sandbox() {}
 };
 
 Hazel::Application* Hazel::CreateApplication()

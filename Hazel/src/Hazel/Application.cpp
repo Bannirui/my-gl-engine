@@ -95,4 +95,4 @@ namespace Hazel
         Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
         return false;
     }
-}
+}  // namespace Hazel

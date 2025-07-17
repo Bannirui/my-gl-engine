@@ -25,12 +25,10 @@ namespace Hazel
         s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
     }
 
-    void Renderer::EndScene()
-    {
-    }
+    void Renderer::EndScene() {}
 
     void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray,
-                          const glm::mat4&               transform)
+                          const glm::mat4& transform)
     {
         shader->Bind();
         auto open_gl_shader = std::dynamic_pointer_cast<OpenGLShader>(shader);
@@ -40,4 +38,4 @@ namespace Hazel
         vertexArray->Bind();
         RendererCommand::DrawIndexed(vertexArray);
     }
-}
+}  // namespace Hazel
